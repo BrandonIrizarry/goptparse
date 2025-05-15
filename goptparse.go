@@ -13,6 +13,7 @@ package goptparse
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -76,22 +77,6 @@ type Result struct {
 // Used to capture user-defined options, to extract help info later.
 var capturedOptions = make([]Option, 0)
 
-// DisplayHelp displays the required command-line help message.  Use
-// this function to activate "help" when unmarshalling inside a switch
-// statement, e.g.:
-//
-// switch value.Long {
-// <stuff omitted>
-// default:
-//
-//		DisplayHelp()
-//	}
-func DisplayHelp() {
-	for _, option := range capturedOptions {
-		fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, option.Help)
-	}
-}
-
 // Parse results a slice of the parsed results, the remaining arguments,
 // and the first parser error. The results slice always contains results
 // up until the first error.
@@ -99,19 +84,24 @@ func DisplayHelp() {
 // The first argument, args[0], is skipped, and arguments are not
 // permuted. Parsing stops at the first non-option argument, or "--".
 // The latter is not included in the remaining, unparsed arguments.
+//
+// goptparse: If --help or -h is given on the command line, a help
+// summary of all commands is printed, and the calling program is
+// instructed to exit. Redefining either --help or -h is illegal, to
+// avoid confusing scenarios.
 func Parse(options []Option, args []string) ([]Result, []string, error) {
-	// We disallow adding --help or -h for clarity's sake.
 	for _, option := range options {
 		if option.Long == "help" || option.Short == 'h' {
-			message := "--help/-h reserved for built-in help feature"
+			message := "Cannot redefine --help/-h"
 			return []Result{}, []string{}, Error{Option{"help", 'h', 0, ""}, message}
 		}
 
-		// Otherwise, capture the user-defined option.
+		// Capture the given option, for use in the help info
+		// display.
 		capturedOptions = append(capturedOptions, option)
 	}
 
-	// Automatically add a "help" option.
+	// Here is where we add the "help" option.
 	options = append(options, Option{"help", 'h', KindNone, "Print this help message"})
 
 	parser := parser{options: options, args: args}
@@ -120,6 +110,16 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 		result, err := parser.next()
 		if err != nil || result == nil {
 			return results, parser.rest(), err
+		}
+
+		if result.Long == "help" {
+			// Display help info.
+			for _, option := range capturedOptions {
+				fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, option.Help)
+			}
+
+			// Exit the program.
+			os.Exit(0)
 		}
 
 		results = append(results, *result)
