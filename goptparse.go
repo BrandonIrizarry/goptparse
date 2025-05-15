@@ -31,6 +31,9 @@ const (
 	ErrMissing = "option requires an argument"
 	// ErrTooMany is used when an unwanted argument is provided.
 	ErrTooMany = "option takes no arguments"
+	//ErrHelpRedefined is used when either -h or --help are
+	// redefined by the user.
+	ErrHelpRedefined = "cannot redefine --help or -h"
 )
 
 // Kind is an enumeration indicating how an option is used.
@@ -92,8 +95,7 @@ var capturedOptions = make([]Option, 0)
 func Parse(options []Option, args []string) ([]Result, []string, error) {
 	for _, option := range options {
 		if option.Long == "help" || option.Short == 'h' {
-			message := "Cannot redefine --help/-h"
-			return []Result{}, []string{}, Error{Option{"help", 'h', 0, ""}, message}
+			return []Result{}, []string{}, Error{Option{"help", 'h', 0, ""}, ErrHelpRedefined}
 		}
 
 		// Capture the given option, for use in the help info
