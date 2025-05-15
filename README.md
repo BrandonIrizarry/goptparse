@@ -11,23 +11,19 @@ Like the traditional `getopt()`, it doesn't automatically parse option
 arguments, instead delivering them as strings. Nor does it automatically
 generate a usage message.
 
+## Goptparse
+
 This particular fork of
-[https://github.com/skeeto/optparse-go](https://github.com/skeeto/optparse-go)
-extends the original by automatically adding `--help` and `-h` based
-on a `Help` field included in each user-configured `Option` (see
-example below.) This is a feature that I missed from the original
-`flag` package.
+[optparse-go](https://github.com/skeeto/optparse-go) extends the
+original by automatically adding `--help` and `-h` based on a `Help`
+field included in each user-configured `Option` (see example below.) A
+built-in help facility is a feature I missed from the original `flag`
+package. In general, I feel programs should be oriented around
+documentation. Emacs is a star example of this paradigm in action.
 
-There are two downsides to this though:
-
-1. Both `--help` and `-h` flags are now reserved by the application;
-   defining your own is an error.
-2. The function `DisplayHelp` still needs to be automatically invoked
-   if `--help` or `h` are given, or else if a non-existent flag is
-   given. The latter condition makes it easy to include `DisplayHelp`
-   as part of the `default` clause in the `switch` statement used to
-   unmarshal the arguments into the application. The example given
-   below should make this clearer.
+There is one limitation though: both `--help` and `-h` flags are now
+reserved by the application; defining your own `--help` or `-h` is
+illegal.
 
 ## Example usage
 
