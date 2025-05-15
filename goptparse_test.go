@@ -178,3 +178,20 @@ func TestParse(t *testing.T) {
 		}
 	}
 }
+
+func TestGoptparse(t *testing.T) {
+	longHelp := Option{"help", 'η', KindNone, "Display this help message"}
+	shortHelp := Option{"ayuda", 'h', KindNone, "Display this help message"}
+
+	_, _, err := Parse([]Option{longHelp}, []string{})
+
+	if err == nil {
+		t.Error("Redefined --help should be illegal")
+	}
+
+	_, _, err = Parse([]Option{shortHelp}, []string{})
+
+	if err == nil {
+		t.Error("Redefined -h should be illegal")
+	}
+}
