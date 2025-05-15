@@ -62,6 +62,9 @@ func equal(a, b []string) bool {
 	return true
 }
 
+// Note that the first element of each 'args' slice is the empty
+// string, since we're not interested in the command itself, only the
+// supplied args.
 func TestParse(t *testing.T) {
 	table := []struct {
 		args []string
