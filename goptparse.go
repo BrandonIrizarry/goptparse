@@ -9,7 +9,7 @@
 // with the arguments string slice, to the Parse() function. It will
 // return a slice of parsing results, which is to be iterated over just
 // like getopt().
-package optparse
+package goptparse
 
 import (
 	"fmt"

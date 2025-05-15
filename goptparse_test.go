@@ -1,4 +1,4 @@
-package optparse
+package goptparse
 
 import (
 	"strconv"
