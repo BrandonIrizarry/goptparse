@@ -5,75 +5,30 @@ Package optparse parses command line arguments very similarly to GNU
 does not permute arguments. It is intended as a replacement for Go's
 flag package.
 
-    go get nullprogram.com/x/optparse
+    go get github.com/BrandonIrizarry/goptparse
 
 Like the traditional `getopt()`, it doesn't automatically parse option
 arguments, instead delivering them as strings. Nor does it automatically
 generate a usage message.
 
-Online documentation: <https://pkg.go.dev/nullprogram.com/x/optparse>
+This particular fork of
+[https://github.com/skeeto/optparse-go](https://github.com/skeeto/optparse-go)
+extends the original by automatically adding `--help` and `-h` based
+on a `Help` field included in each user-configured `Option` (see
+example below.) This is a feature that I missed from the original
+`flag` package.
+
+There are two downsides to this though:
+
+1. Both `--help` and `-h` flags are now reserved by the application;
+   defining your own is an error.
+2. The function `DisplayHelp` still needs to be automatically invoked
+   if `--help` or `h` are given, or else if a non-existent flag is
+   given. The latter condition makes it easy to include `DisplayHelp`
+   as part of the `default` clause in the `switch` statement used to
+   unmarshal the arguments into the application. The example given
+   below should make this clearer.
 
 ## Example usage
 
-```go
-package main
-
-import (
-	"fmt"
-	"os"
-	"strconv"
-
-	"nullprogram.com/x/optparse"
-)
-
-func fatal(err error) {
-	fmt.Fprintf(os.Stderr, "%s: %s\n", os.Args[0], err)
-	os.Exit(1)
-}
-
-func main() {
-	options := []optparse.Option{
-		{"amend", 'a', optparse.KindNone},
-		{"brief", 'b', optparse.KindNone},
-		{"color", 'c', optparse.KindOptional},
-		{"delay", 'd', optparse.KindRequired},
-		{"erase", 'e', optparse.KindNone},
-	}
-
-	var amend bool
-	var brief bool
-	var color string
-	var delay int
-	var erase int
-
-	results, rest, err := optparse.Parse(options, os.Args)
-	if err != nil {
-		fatal(err)
-	}
-
-	for _, result := range results {
-		switch result.Long {
-		case "amend":
-			amend = true
-		case "brief":
-			brief = true
-		case "color":
-			color = result.Optarg
-		case "delay":
-			delay, err = strconv.Atoi(result.Optarg)
-			if err != nil {
-				fatal(err)
-			}
-		case "erase":
-			erase++
-		}
-	}
-
-	fmt.Println("amend", amend)
-	fmt.Println("brief", brief)
-	fmt.Println("color", color)
-	fmt.Println("delay", delay)
-	fmt.Println("erase", erase)
-	fmt.Println(rest)
-}
-```
+Currently under construction.
