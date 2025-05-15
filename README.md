@@ -94,4 +94,6 @@ func main() {
 	fmt.Println(rest)
 }
 ```
+## Licensing
 
+I decided to simply keep the original upstream `UNLICENSE` document.
