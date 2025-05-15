@@ -11,7 +11,7 @@ Like the traditional `getopt()`, it doesn't automatically parse option
 arguments, instead delivering them as strings. Nor does it automatically
 generate a usage message.
 
-## Goptparse
+## `goptparse`
 
 This particular fork of
 [optparse-go](https://github.com/skeeto/optparse-go) extends the
