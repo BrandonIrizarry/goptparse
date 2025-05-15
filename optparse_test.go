@@ -6,16 +6,16 @@ import (
 )
 
 var options = []Option{
-	{"amend", 'a', KindNone},
-	{"brief", 'b', KindNone},
-	{"color", 'c', KindOptional},
-	{"delay", 'd', KindRequired},
-	{"erase", 'e', KindNone},
+	{"amend", 'a', KindNone, "amend a foo"},
+	{"brief", 'b', KindNone, "perform a brief scan"},
+	{"color", 'c', KindOptional, "colorize output"},
+	{"delay", 'd', KindRequired, "delay ARG milliseconds"},
+	{"erase", 'e', KindNone, "erase current changes"},
 
 	// special cases
-	{"pi", 'π', KindNone}, // multibyte short option
-	{"long", 0, KindNone}, // long only
-	{"", 's', KindNone},   // short only
+	{"pi", 'π', KindNone, "3.14"},                     // multibyte short option
+	{"long", 0, KindNone, "zero-value"},               // long only
+	{"", 's', KindNone, "quick switch configuration"}, // short only
 }
 
 type config struct {
@@ -128,19 +128,19 @@ func TestParse(t *testing.T) {
 			[]string{"", "--delay"},
 			config{false, false, "", 0, 0, 0},
 			[]string{},
-			Error{Option{"delay", 'd', KindRequired}, ErrMissing},
+			Error{Option{"delay", 'd', KindRequired, "delay ARG milliseconds"}, ErrMissing},
 		},
 		{
 			[]string{"", "--foo", "bar"},
 			config{false, false, "", 0, 0, 0},
 			[]string{"--foo", "bar"},
-			Error{Option{"foo", 0, 0}, ErrInvalid},
+			Error{Option{"foo", 0, 0, ""}, ErrInvalid},
 		},
 		{
 			[]string{"", "-x"},
 			config{false, false, "", 0, 0, 0},
 			[]string{"-x"},
-			Error{Option{"", 'x', 0}, ErrInvalid},
+			Error{Option{"", 'x', 0, ""}, ErrInvalid},
 		},
 		{
 			[]string{"", "-"},
@@ -152,7 +152,7 @@ func TestParse(t *testing.T) {
 			[]string{"", "-\x00"},
 			config{false, false, "", 0, 0, 0},
 			[]string{"-\x00"},
-			Error{Option{"", 0, 0}, ErrInvalid},
+			Error{Option{"", 0, 0, ""}, ErrInvalid},
 		},
 	}
 
