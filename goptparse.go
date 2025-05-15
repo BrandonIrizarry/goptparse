@@ -88,7 +88,7 @@ var capturedOptions = make([]Option, 0)
 //	}
 func DisplayHelp() {
 	for _, option := range capturedOptions {
-		fmt.Printf("%s, %c\t\t%s\n", option.Long, option.Short, option.Help)
+		fmt.Printf("--%s, -%c: \t\t%20s\n", option.Long, option.Short, option.Help)
 	}
 }
 
