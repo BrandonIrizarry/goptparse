@@ -43,6 +43,7 @@ type Option struct {
 	Long  string
 	Short rune
 	Kind  Kind
+	Help  string
 }
 
 // Error represents all possible parsing errors. It embeds the option
@@ -72,6 +73,25 @@ type Result struct {
 	Optarg string
 }
 
+// Used to capture user-defined options, to extract help info later.
+var capturedOptions = make([]Option, 0)
+
+// DisplayHelp displays the required command-line help message.  Use
+// this function to activate "help" when unmarshalling inside a switch
+// statement, e.g.:
+//
+// switch value.Long {
+// <stuff omitted>
+// default:
+//
+//		DisplayHelp()
+//	}
+func DisplayHelp() {
+	for _, option := range capturedOptions {
+		fmt.Printf("%s, %c\t\t%s\n", option.Long, option.Short, option.Help)
+	}
+}
+
 // Parse results a slice of the parsed results, the remaining arguments,
 // and the first parser error. The results slice always contains results
 // up until the first error.
@@ -80,6 +100,20 @@ type Result struct {
 // permuted. Parsing stops at the first non-option argument, or "--".
 // The latter is not included in the remaining, unparsed arguments.
 func Parse(options []Option, args []string) ([]Result, []string, error) {
+	// We disallow adding --help or -h for clarity's sake.
+	for _, option := range options {
+		if option.Long == "help" || option.Short == 'h' {
+			message := "--help/-h reserved for built-in help feature"
+			return []Result{}, []string{}, Error{Option{"help", 'h', 0, ""}, message}
+		}
+
+		// Otherwise, capture the user-defined option.
+		capturedOptions = append(capturedOptions, option)
+	}
+
+	// Automatically add a "help" option.
+	options = append(options, Option{"help", 'h', KindNone, "Print this help message"})
+
 	parser := parser{options: options, args: args}
 	var results []Result
 	for {
@@ -87,6 +121,7 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 		if err != nil || result == nil {
 			return results, parser.rest(), err
 		}
+
 		results = append(results, *result)
 	}
 }
@@ -105,7 +140,7 @@ func (p *parser) short() (*Result, error) {
 	c := runes[p.subopt]
 	option := findShort(p.options, c)
 	if option == nil {
-		return nil, Error{Option{"", c, 0}, ErrInvalid}
+		return nil, Error{Option{"", c, 0, ""}, ErrInvalid}
 	}
 	switch option.Kind {
 
@@ -154,7 +189,7 @@ func (p *parser) long() (*Result, error) {
 
 	option := findLong(p.options, long)
 	if option == nil {
-		return nil, Error{Option{long, 0, 0}, ErrInvalid}
+		return nil, Error{Option{long, 0, 0, ""}, ErrInvalid}
 	}
 	p.optind++
 
