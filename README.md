@@ -31,4 +31,71 @@ There are two downsides to this though:
 
 ## Example usage
 
-Currently under construction.
+This is more or less modeled after the `optparse-go` upstream example,
+but with some relevant modifications.
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"os"
+	"strconv"
+
+	"github.com/BrandonIrizarry/goptparse"
+)
+
+func main() {
+	options := []goptparse.Option{
+		{Long: "amend", Short: 'a', Kind: goptparse.KindNone, Help: "Amend something"},
+		{Long: "brief", Short: 'b', Kind: goptparse.KindNone, Help: "Give a brief summary"},
+		{Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: "Colorize output"},
+		{Long: "delay", Short: 'd', Kind: goptparse.KindRequired, Help: "Add an ARG millisecond delay"},
+		{Long: "erase", Short: 'e', Kind: goptparse.KindNone, Help: "Erase it"},
+	}
+
+	var amend bool
+	var brief bool
+	var color string
+	var delay int
+	var erase int
+
+	// If -h or --help were given, the help message will print at
+	// this step, and the program will exit.
+	results, rest, err := goptparse.Parse(options, os.Args)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Note that we don't need to handle "help" separately.
+	for _, result := range results {
+		switch result.Long {
+		case "amend":
+			amend = true
+		case "brief":
+			brief = true
+		case "color":
+			color = result.Optarg
+		case "delay":
+			delay, err = strconv.Atoi(result.Optarg)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+		case "erase":
+			erase++
+		}
+
+	}
+
+	fmt.Println("amend", amend)
+	fmt.Println("brief", brief)
+	fmt.Println("color", color)
+	fmt.Println("delay", delay)
+	fmt.Println("erase", erase)
+	fmt.Println(rest)
+}
+```
+
