@@ -136,7 +136,8 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 
 				// Scan and print the remaining lines.
 				for scanner.Scan() {
-					fmt.Printf("\t\t\t\t%-50s\n", scanner.Text())
+					text := strings.TrimLeft(scanner.Text(), " \t")
+					fmt.Printf("\t\t\t\t%-50s\n", text)
 				}
 			}
 
