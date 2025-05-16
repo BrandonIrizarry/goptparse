@@ -180,6 +180,8 @@ func TestParse(t *testing.T) {
 }
 
 func TestGoptparse(t *testing.T) {
+	// Check that our application guards against help-flag
+	// redefinition.
 	longHelp := Option{"help", 'η', KindNone, "Display this help message"}
 	shortHelp := Option{"ayuda", 'h', KindNone, "Display this help message"}
 
