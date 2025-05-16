@@ -12,6 +12,7 @@
 package v2
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -127,7 +128,11 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 		if result.Long == "help" {
 			// Display help info.
 			for _, option := range capturedOptions {
-				fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, option.Help)
+				scanner := bufio.NewScanner(strings.NewReader(option.Help))
+
+				// Scan the first line.
+				scanner.Scan()
+				fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, scanner.Text())
 			}
 
 			// Exit the program.
