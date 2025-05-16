@@ -130,9 +130,14 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 			for _, option := range capturedOptions {
 				scanner := bufio.NewScanner(strings.NewReader(option.Help))
 
-				// Scan the first line.
+				// Scan and print the first line.
 				scanner.Scan()
 				fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, scanner.Text())
+
+				// Scan and print the remaining lines.
+				for scanner.Scan() {
+					fmt.Printf("\t\t\t\t%-50s\n", scanner.Text())
+				}
 			}
 
 			// Exit the program.
