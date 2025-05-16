@@ -65,6 +65,10 @@ func equal(a, b []string) bool {
 // Note that the first element of each 'args' slice is the empty
 // string, since we're not interested in the command itself, only the
 // supplied args.
+//
+// Also, the err field of the table struct is allowed to contain an
+// Option with an empty Help field, since it doesn't go through the
+// Parse function.
 func TestParse(t *testing.T) {
 	table := []struct {
 		args []string
@@ -195,5 +199,18 @@ func TestGoptparse(t *testing.T) {
 
 	if err == nil {
 		t.Error("Redefined -h should be illegal")
+	}
+
+	// Check that our application rejects an empty Help field.
+	emptyHelp := Option{
+		Long:  "foo",
+		Short: 'f',
+		Kind:  KindNone,
+	}
+
+	_, _, err = Parse([]Option{emptyHelp}, []string{})
+
+	if err == nil {
+		t.Error("Absent Help field should be illegal")
 	}
 }

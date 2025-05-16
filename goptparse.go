@@ -34,6 +34,9 @@ const (
 	//ErrHelpRedefined is used when either -h or --help are
 	// redefined by the user.
 	ErrHelpRedefined = "cannot redefine --help or -h"
+	// ErrHelpMissing is used when the Help field is omitted (or
+	// else intentionally provided as the empty string)
+	ErrHelpMissing = "missing help field"
 )
 
 // Kind is an enumeration indicating how an option is used.
@@ -96,6 +99,13 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 	for _, option := range options {
 		if option.Long == "help" || option.Short == 'h' {
 			return []Result{}, []string{}, Error{Option{"help", 'h', 0, ""}, ErrHelpRedefined}
+		}
+
+		// Ensure that the Help field isn't the empty
+		// string. This is mainly to ensure that the user
+		// doesn't forget to add the field in the first place.
+		if option.Help == "" {
+			return []Result{}, []string{}, Error{option, ErrHelpMissing}
 		}
 
 		// Capture the given option, for use in the help info
