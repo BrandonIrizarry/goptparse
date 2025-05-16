@@ -5,7 +5,7 @@ Package optparse parses command line arguments very similarly to GNU
 does not permute arguments. It is intended as a replacement for Go's
 flag package.
 
-	go get github.com/BrandonIrizarry/goptparse
+    go get github.com/BrandonIrizarry/goptparse
 
 Like the traditional `getopt()`, it doesn't automatically parse option
 arguments, instead delivering them as strings. Nor does it automatically
@@ -42,72 +42,72 @@ but with some relevant modifications.
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"strconv"
+    "fmt"
+    "log"
+    "os"
+    "strconv"
 
-	"github.com/BrandonIrizarry/goptparse"
+    "github.com/BrandonIrizarry/goptparse"
 )
 
 func main() {
-	options := []goptparse.Option{
-		{Long: "amend", Short: 'a', Kind: goptparse.KindNone, Help: "Amend something"},
-		{Long: "brief", Short: 'b', Kind: goptparse.KindNone, Help: "Give a brief summary"},
+    options := []goptparse.Option{
+        {Long: "amend", Short: 'a', Kind: goptparse.KindNone, Help: "Amend something"},
+        {Long: "brief", Short: 'b', Kind: goptparse.KindNone, Help: "Give a brief summary"},
 
-		// Multiline strings can be used for more elaborate help output.
-		{Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: `Colorize output.
+        // Multiline strings can be used for more elaborate help output.
+        {Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: `Colorize output.
 
-																		 Examples: -cblue, --color=red
+                                                                         Examples: -cblue, --color=red
 
-																		 Make sure there is no intervening space between the flag
-																		 and its value.`},
+                                                                         Make sure there is no intervening space between the flag
+                                                                         and its value.`},
 
-		{Long: "delay", Short: 'd', Kind: goptparse.KindRequired, Help: "Add an ARG millisecond delay"},
-		{Long: "erase", Short: 'e', Kind: goptparse.KindNone, Help: "Erase it"},
-	}
+        {Long: "delay", Short: 'd', Kind: goptparse.KindRequired, Help: "Add an ARG millisecond delay"},
+        {Long: "erase", Short: 'e', Kind: goptparse.KindNone, Help: "Erase it"},
+    }
 
-	var amend bool
-	var brief bool
-	var color string
-	var delay int
-	var erase int
+    var amend bool
+    var brief bool
+    var color string
+    var delay int
+    var erase int
 
-	// If -h or --help were given, the help message will print at
-	// this step, and the program will exit.
-	results, rest, err := goptparse.Parse(options, os.Args)
+    // If -h or --help were given, the help message will print at
+    // this step, and the program will exit.
+    results, rest, err := goptparse.Parse(options, os.Args)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	// Note that we don't need to handle "help" separately.
-	for _, result := range results {
-		switch result.Long {
-		case "amend":
-			amend = true
-		case "brief":
-			brief = true
-		case "color":
-			color = result.Optarg
-		case "delay":
-			delay, err = strconv.Atoi(result.Optarg)
+    // Note that we don't need to handle "help" separately.
+    for _, result := range results {
+        switch result.Long {
+        case "amend":
+            amend = true
+        case "brief":
+            brief = true
+        case "color":
+            color = result.Optarg
+        case "delay":
+            delay, err = strconv.Atoi(result.Optarg)
 
-			if err != nil {
-				log.Fatal(err)
-			}
-		case "erase":
-			erase++
-		}
+            if err != nil {
+                log.Fatal(err)
+            }
+        case "erase":
+            erase++
+        }
 
-	}
+    }
 
-	fmt.Println("amend", amend)
-	fmt.Println("brief", brief)
-	fmt.Println("color", color)
-	fmt.Println("delay", delay)
-	fmt.Println("erase", erase)
-	fmt.Println(rest)
+    fmt.Println("amend", amend)
+    fmt.Println("brief", brief)
+    fmt.Println("color", color)
+    fmt.Println("delay", delay)
+    fmt.Println("erase", erase)
+    fmt.Println(rest)
 }
 ```
 ## Licensing
