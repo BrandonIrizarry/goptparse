@@ -5,7 +5,7 @@ Package optparse parses command line arguments very similarly to GNU
 does not permute arguments. It is intended as a replacement for Go's
 flag package.
 
-    go get github.com/BrandonIrizarry/goptparse
+	go get github.com/BrandonIrizarry/goptparse
 
 Like the traditional `getopt()`, it doesn't automatically parse option
 arguments, instead delivering them as strings. Nor does it automatically
@@ -24,6 +24,14 @@ documentation. Emacs is a star example of this paradigm in action.
 There is one limitation though: both `--help` and `-h` flags are now
 reserved by the application; defining your own `--help` or `-h` is
 illegal.
+
+### Multiline help strings
+
+Multiline strings can be used for more elaborate help output; see the
+definition of the "color" flag in the example below. The string can be
+formatted as you wish; the library will handle the necessary
+pretty-printing. For example, you can format the string such that each
+subsequent line has the same left-margin.
 
 ## Example usage
 
@@ -46,7 +54,15 @@ func main() {
 	options := []goptparse.Option{
 		{Long: "amend", Short: 'a', Kind: goptparse.KindNone, Help: "Amend something"},
 		{Long: "brief", Short: 'b', Kind: goptparse.KindNone, Help: "Give a brief summary"},
-		{Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: "Colorize output"},
+
+		// Multiline strings can be used for more elaborate help output.
+		{Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: `Colorize output.
+
+																		 Examples: -cblue, --color=red
+
+																		 Make sure there is no intervening space between the flag
+																		 and its value.`},
+
 		{Long: "delay", Short: 'd', Kind: goptparse.KindRequired, Help: "Add an ARG millisecond delay"},
 		{Long: "erase", Short: 'e', Kind: goptparse.KindNone, Help: "Erase it"},
 	}
