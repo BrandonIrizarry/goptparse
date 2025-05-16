@@ -142,6 +142,8 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 					text := strings.TrimLeft(scanner.Text(), " \t")
 					fmt.Printf("%s\t\t%-50s\n", leftPadding, text)
 				}
+
+				fmt.Println()
 			}
 
 			// Exit the program.
