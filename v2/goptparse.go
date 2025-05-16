@@ -132,12 +132,15 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 
 				// Scan and print the first line.
 				scanner.Scan()
-				fmt.Printf("--%s (-%c)\t\t%-50s\n", option.Long, option.Short, scanner.Text())
+				flagDesc := fmt.Sprintf("--%s (-%c)", option.Long, option.Short)
+				fmt.Printf("%s\t\t%-50s\n", flagDesc, scanner.Text())
+
+				leftPadding := strings.Repeat(" ", len(flagDesc))
 
 				// Scan and print the remaining lines.
 				for scanner.Scan() {
 					text := strings.TrimLeft(scanner.Text(), " \t")
-					fmt.Printf("\t\t\t\t%-50s\n", text)
+					fmt.Printf("%s\t\t%-50s\n", leftPadding, text)
 				}
 			}
 
