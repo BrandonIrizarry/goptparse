@@ -128,13 +128,22 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 		if result.Long == "help" {
 			// Display help info.
 			for _, option := range capturedOptions {
+				// Capture the string representing the
+				// flag introduction, so that we can
+				// use its length to later ensure that
+				// all subsequent lines of text in the
+				// help description respect the
+				// implied right-justification.
+				flagDesc := fmt.Sprintf("--%s (-%c)", option.Long, option.Short)
+
 				scanner := bufio.NewScanner(strings.NewReader(option.Help))
 
-				// Scan and print the first line.
+				// Scan the first line.
 				scanner.Scan()
-				flagDesc := fmt.Sprintf("--%s (-%c)", option.Long, option.Short)
 				fmt.Printf("%s\t\t%-50s\n", flagDesc, scanner.Text())
 
+				// Construct the padding needed for
+				// pretty-printing.
 				leftPadding := strings.Repeat(" ", len(flagDesc))
 
 				// Scan and print the remaining lines.
@@ -143,6 +152,8 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 					fmt.Printf("%s\t\t%-50s\n", leftPadding, text)
 				}
 
+				// Print a blank line, to put space
+				// between this and the next printout.
 				fmt.Println()
 			}
 
