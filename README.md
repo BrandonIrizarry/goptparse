@@ -58,12 +58,13 @@ func main() {
         // Multiline strings can be used for more elaborate help output.
         {Long: "color", Short: 'c', Kind: goptparse.KindOptional, Help: `Colorize output.
 
-                                                                         Examples: -cblue, --color=red
+                         Examples: -cblue, --color=red
 
-                                                                         Make sure there is no intervening space between the flag
-                                                                         and its value.`},
+                         Make sure there is no intervening space between the flag
+                         and its value.`},
 
-        {Long: "delay", Short: 'd', Kind: goptparse.KindRequired, Help: "Add an ARG millisecond delay"},
+        {Long: "delay", Short: 'd', Kind: goptparse.KindRequired,
+                Help: "Add an ARG millisecond delay"},
         {Long: "erase", Short: 'e', Kind: goptparse.KindNone, Help: "Erase it"},
     }
 
