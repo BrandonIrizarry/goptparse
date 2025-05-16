@@ -126,6 +126,10 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 		}
 
 		if result.Long == "help" {
+			// Before displaying help info, add a newline
+			// for visual appeal.
+			fmt.Println()
+
 			// Display help info.
 			for _, option := range capturedOptions {
 				// Capture the string representing the
