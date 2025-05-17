@@ -115,7 +115,14 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 	}
 
 	// Here is where we add the "help" option.
-	capturedOptions = append(capturedOptions, Option{"help", 'h', KindNone, "Print this help message"})
+	//
+	// It needs to be added to both the original options slice (so
+	// that it's usable!), and to the 'capturedOptions' slice (so
+	// that its own help documentation shows up among the output
+	// of --help itself.)
+	helpOption := Option{"help", 'h', KindNone, "Print this help message"}
+	options = append(options, helpOption)
+	capturedOptions = append(capturedOptions, helpOption)
 
 	parser := parser{options: options, args: args}
 	var results []Result
