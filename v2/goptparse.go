@@ -62,6 +62,18 @@ type Error struct {
 	Message string
 }
 
+// computeFlagDesc computes the beginning of a flag's cli help text based on
+// which formats are defined for that flag.
+func computeFlagDesc(long string, short rune) string {
+	if long != "" && short != 0 {
+		return fmt.Sprintf("--%s (-%c)", long, short)
+	} else if long != "" {
+		return fmt.Sprintf("--%s", long)
+	} else {
+		return fmt.Sprintf("-%c", short)
+	}
+}
+
 func (e Error) Error() string {
 	if e.Long != "" && e.Short != 0 {
 		return fmt.Sprintf("%s: --%s (-%c)", e.Message, e.Long, e.Short)
@@ -145,7 +157,7 @@ func Parse(options []Option, args []string) ([]Result, []string, error) {
 				// all subsequent lines of text in the
 				// help description respect the
 				// implied right-justification.
-				flagDesc := fmt.Sprintf("--%s (-%c)", option.Long, option.Short)
+				flagDesc := computeFlagDesc(option.Long, option.Short)
 
 				scanner := bufio.NewScanner(strings.NewReader(option.Help))
 
