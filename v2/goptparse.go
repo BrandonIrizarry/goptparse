@@ -68,9 +68,9 @@ func computeFlagDesc(long string, short rune) string {
 	if long != "" && short != 0 {
 		return fmt.Sprintf("--%s (-%c)", long, short)
 	} else if long != "" {
-		return fmt.Sprintf("--%s", long)
+		return fmt.Sprintf("--%s     ", long)
 	} else {
-		return fmt.Sprintf("-%c", short)
+		return fmt.Sprintf("-%c     ", short)
 	}
 }
 
